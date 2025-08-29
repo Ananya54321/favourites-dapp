@@ -6,7 +6,7 @@ pub const ANCHOR_DISCRIMINATOR_SIZE: usize = 8;
 
 #[program]
 pub mod favourites {
-    use crate::instruction::SetFavourites;
+    // use crate::instruction::SetFavourites;
 
     use super::*;
 
@@ -18,7 +18,13 @@ pub mod favourites {
     ) -> Result<()> {
         msg!("Greetings from {}", ctx.program_id);
         let user_public_key = ctx.accounts.user.key();
-        msg!("User {user_public_key}");
+        msg!("User {user_public_key}'s favourite color is {color} and their hobbies are : {hobbies:?}");
+        ctx.accounts.favourites.set_inner(Favourites {
+            number,
+            color,
+            hobbies,
+        });
+        Ok(())
     }
 }
 
@@ -31,7 +37,7 @@ pub struct Favourites {
     #[max_len(5, 50)]
     pub hobbies: Vec<String>,
 }
-
+#[derive(Accounts)]
 pub struct SetFavourites<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
